@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="NewsfeedModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="bejournalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="categoryId" />
@@ -23,6 +23,14 @@
           <Property Name="postCategory" Type="int" />
           <Property Name="postApproved" Type="bit" />
           <Property Name="postedBy" Type="int" />
+          <Property Name="MetaTitle" Type="varchar" MaxLength="255" />
+          <Property Name="MetaDescription" Type="varchar" MaxLength="255" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="Tags" Type="varchar" MaxLength="255" />
+          <Property Name="MetaKeywords" Type="varchar" MaxLength="255" />
+          <Property Name="postSource" Type="varchar" MaxLength="255" />
+          <Property Name="OwnerOfSource" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -33,9 +41,22 @@
           <Property Name="email" Type="varchar" MaxLength="255" />
           <Property Name="password" Type="varchar" MaxLength="255" />
           <Property Name="type" Type="varchar" MaxLength="255" />
+          <Property Name="ipAddress" Type="varchar" MaxLength="255" />
           <Property Name="active" Type="bit" />
         </EntityType>
-        <Association Name="FK__Posts__postCateg__3E52440B">
+        <Association Name="FK__Posts__ModifiedB__24927208">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Posts" Type="Self.Posts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="Posts">
+              <PropertyRef Name="ModifiedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Posts__postCateg__239E4DCF">
           <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
           <End Role="Posts" Type="Self.Posts" Multiplicity="*" />
           <ReferentialConstraint>
@@ -47,7 +68,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Posts__postedBy__3D5E1FD2">
+        <Association Name="FK__Posts__postedBy__22AA2996">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Posts" Type="Self.Posts" Multiplicity="*" />
           <ReferentialConstraint>
@@ -59,31 +80,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="NewsfeedModelStoreContainer">
-          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Posts" EntityType="Self.Posts" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Posts__postCateg__3E52440B" Association="Self.FK__Posts__postCateg__3E52440B">
+        <EntityContainer Name="bejournalModelStoreContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="journalist" store:Type="Tables" />
+          <EntitySet Name="Posts" EntityType="Self.Posts" Schema="journalist" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="journalist" store:Type="Tables" />
+          <AssociationSet Name="FK__Posts__ModifiedB__24927208" Association="Self.FK__Posts__ModifiedB__24927208">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Posts" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Posts__postCateg__239E4DCF" Association="Self.FK__Posts__postCateg__239E4DCF">
             <End Role="Category" EntitySet="Category" />
             <End Role="Posts" EntitySet="Posts" />
           </AssociationSet>
-          <AssociationSet Name="FK__Posts__postedBy__3D5E1FD2" Association="Self.FK__Posts__postedBy__3D5E1FD2">
+          <AssociationSet Name="FK__Posts__postedBy__22AA2996" Association="Self.FK__Posts__postedBy__22AA2996">
             <End Role="Users" EntitySet="Users" />
             <End Role="Posts" EntitySet="Posts" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="NewsfeedModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="bejournalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="categoryId" />
           </Key>
           <Property Name="categoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="categoryName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Posts" Relationship="Self.FK__Posts__postCateg__3E52440B" FromRole="Category" ToRole="Posts" />
+          <NavigationProperty Name="Posts" Relationship="Self.FK__Posts__postCateg__173876EA" FromRole="Category" ToRole="Posts" />
         </EntityType>
         <EntityType Name="Post">
           <Key>
@@ -96,8 +120,17 @@
           <Property Name="postCategory" Type="Int32" />
           <Property Name="postApproved" Type="Boolean" />
           <Property Name="postedBy" Type="Int32" />
-          <NavigationProperty Name="Category" Relationship="Self.FK__Posts__postCateg__3E52440B" FromRole="Posts" ToRole="Category" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Posts__postedBy__3D5E1FD2" FromRole="Posts" ToRole="Users" />
+          <Property Name="MetaTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MetaDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="Tags" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MetaKeywords" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="postSource" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OwnerOfSource" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK__Posts__postCateg__173876EA" FromRole="Posts" ToRole="Category" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Posts__ModifiedB__182C9B23" FromRole="Posts" ToRole="Users" />
+          <NavigationProperty Name="User1" Relationship="Self.FK__Posts__postedBy__164452B1" FromRole="Posts" ToRole="Users" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -108,10 +141,12 @@
           <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ipAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="active" Type="Boolean" />
-          <NavigationProperty Name="Posts" Relationship="Self.FK__Posts__postedBy__3D5E1FD2" FromRole="Users" ToRole="Posts" />
+          <NavigationProperty Name="Posts" Relationship="Self.FK__Posts__ModifiedB__182C9B23" FromRole="Users" ToRole="Posts" />
+          <NavigationProperty Name="Posts1" Relationship="Self.FK__Posts__postedBy__164452B1" FromRole="Users" ToRole="Posts" />
         </EntityType>
-        <Association Name="FK__Posts__postCateg__3E52440B">
+        <Association Name="FK__Posts__postCateg__173876EA">
           <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
           <End Role="Posts" Type="Self.Post" Multiplicity="*" />
           <ReferentialConstraint>
@@ -123,7 +158,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Posts__postedBy__3D5E1FD2">
+        <Association Name="FK__Posts__ModifiedB__182C9B23">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Posts" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="Posts">
+              <PropertyRef Name="ModifiedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Posts__postedBy__164452B1">
           <End Role="Users" Type="Self.User" Multiplicity="0..1" />
           <End Role="Posts" Type="Self.Post" Multiplicity="*" />
           <ReferentialConstraint>
@@ -135,15 +182,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="NewsfeedEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="bejournalEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Posts" EntityType="Self.Post" />
           <EntitySet Name="Users" EntityType="Self.User" />
-          <AssociationSet Name="FK__Posts__postCateg__3E52440B" Association="Self.FK__Posts__postCateg__3E52440B">
+          <AssociationSet Name="FK__Posts__postCateg__173876EA" Association="Self.FK__Posts__postCateg__173876EA">
             <End Role="Category" EntitySet="Categories" />
             <End Role="Posts" EntitySet="Posts" />
           </AssociationSet>
-          <AssociationSet Name="FK__Posts__postedBy__3D5E1FD2" Association="Self.FK__Posts__postedBy__3D5E1FD2">
+          <AssociationSet Name="FK__Posts__ModifiedB__182C9B23" Association="Self.FK__Posts__ModifiedB__182C9B23">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Posts" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Posts__postedBy__164452B1" Association="Self.FK__Posts__postedBy__164452B1">
             <End Role="Users" EntitySet="Users" />
             <End Role="Posts" EntitySet="Posts" />
           </AssociationSet>
@@ -153,9 +204,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="NewsfeedModelStoreContainer" CdmEntityContainer="NewsfeedEntities">
+        <EntityContainerMapping StorageEntityContainer="bejournalModelStoreContainer" CdmEntityContainer="bejournalEntities">
           <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="NewsfeedModel.Category">
+            <EntityTypeMapping TypeName="bejournalModel.Category">
               <MappingFragment StoreEntitySet="Category">
                 <ScalarProperty Name="categoryId" ColumnName="categoryId" />
                 <ScalarProperty Name="categoryName" ColumnName="categoryName" />
@@ -163,7 +214,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Posts">
-            <EntityTypeMapping TypeName="NewsfeedModel.Post">
+            <EntityTypeMapping TypeName="bejournalModel.Post">
               <MappingFragment StoreEntitySet="Posts">
                 <ScalarProperty Name="postId" ColumnName="postId" />
                 <ScalarProperty Name="postTitle" ColumnName="postTitle" />
@@ -172,17 +223,26 @@
                 <ScalarProperty Name="postCategory" ColumnName="postCategory" />
                 <ScalarProperty Name="postApproved" ColumnName="postApproved" />
                 <ScalarProperty Name="postedBy" ColumnName="postedBy" />
+                <ScalarProperty Name="MetaTitle" ColumnName="MetaTitle" />
+                <ScalarProperty Name="MetaDescription" ColumnName="MetaDescription" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Tags" ColumnName="Tags" />
+                <ScalarProperty Name="MetaKeywords" ColumnName="MetaKeywords" />
+                <ScalarProperty Name="postSource" ColumnName="postSource" />
+                <ScalarProperty Name="OwnerOfSource" ColumnName="OwnerOfSource" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="NewsfeedModel.User">
+            <EntityTypeMapping TypeName="bejournalModel.User">
               <MappingFragment StoreEntitySet="Users">
                 <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="ipAddress" ColumnName="ipAddress" />
                 <ScalarProperty Name="active" ColumnName="active" />
               </MappingFragment>
             </EntityTypeMapping>

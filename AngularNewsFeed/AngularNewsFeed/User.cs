@@ -18,6 +18,7 @@ namespace AngularNewsFeed
         public User()
         {
             this.Posts = new HashSet<Post>();
+            this.Posts1 = new HashSet<Post>();
         }
     
         public int userId { get; set; }
@@ -25,9 +26,12 @@ namespace AngularNewsFeed
         public string email { get; set; }
         public string password { get; set; }
         public string type { get; set; }
+        public string ipAddress { get; set; }
         public Nullable<bool> active { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Post> Posts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Post> Posts1 { get; set; }
     }
 }

@@ -21,8 +21,17 @@ namespace AngularNewsFeed
         public Nullable<int> postCategory { get; set; }
         public Nullable<bool> postApproved { get; set; }
         public Nullable<int> postedBy { get; set; }
+        public string MetaTitle { get; set; }
+        public string MetaDescription { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public string Tags { get; set; }
+        public string MetaKeywords { get; set; }
+        public string postSource { get; set; }
+        public string OwnerOfSource { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual User User { get; set; }
+        public virtual User User1 { get; set; }
     }
 }

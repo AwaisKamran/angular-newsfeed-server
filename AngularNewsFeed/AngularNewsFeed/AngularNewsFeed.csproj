@@ -91,8 +91,8 @@
     <Content Include="Global.asax" />
     <Content Include="newsfeed.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>newsfeed.Context.cs</LastGenOutput>
       <DependentUpon>newsfeed.edmx</DependentUpon>
+      <LastGenOutput>newsfeed.Context.cs</LastGenOutput>
     </Content>
     <Content Include="newsfeed.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -108,15 +108,24 @@
     <Compile Include="Category.cs">
       <DependentUpon>newsfeed.tt</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\CatgeoryController.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\CategoryPostsController.cs" />
+    <Compile Include="Controllers\PostApprovalController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Manager\CategoryManager.cs" />
+    <Compile Include="Manager\ConnectionStringManager.cs" />
+    <Compile Include="Manager\PostManager.cs" />
+    <Compile Include="Manager\UserManager.cs" />
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\Posts.cs" />
+    <Compile Include="Model\ResponseModel.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserModel.cs" />
     <Compile Include="newsfeed.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -158,7 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Manager\" />
+    <Folder Include="Images\User\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

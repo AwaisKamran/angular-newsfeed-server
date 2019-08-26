@@ -13,10 +13,10 @@ namespace AngularNewsFeed
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class NewsfeedEntities : DbContext
+    public partial class bejournalEntities : DbContext
     {
-        public NewsfeedEntities()
-            : base("name=NewsfeedEntities")
+        public bejournalEntities()
+            : base("name=bejournalEntities")
         {
         }
     
