@@ -62,7 +62,7 @@ namespace AngularNewsFeed.Manager
             }
         }
 
-        internal static string loginUser(User user)
+        internal static User loginUser(User user)
         {
             string queryString = @"    
                 select * from Users 
@@ -74,19 +74,23 @@ namespace AngularNewsFeed.Manager
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlDataReader reader = null;
+                
                 try
                 {
+                   
                     SqlCommand command = new SqlCommand(queryString, connection);
                     command.Parameters.AddWithValue("@email", user.email);
                     command.Parameters.AddWithValue("@password", user.password);
                     connection.Open();
                     reader = command.ExecuteReader();
-
+                       
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            return reader["type"].ToString();
+                            user.type = reader["type"].ToString();
+                            user.userId = int.Parse(reader["userId"].ToString());
+                            return user;
                         }
                         reader.Close();
                     }

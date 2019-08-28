@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 
 namespace AngularNewsFeed.Controllers
@@ -50,14 +51,43 @@ namespace AngularNewsFeed.Controllers
         }
 
         // POST: api/Post
-        public ResponseModel Post([FromBody]Post post)
+        public ResponseModel Post()
         {
             int data;
             ResponseModel response = new ResponseModel();
+
+            Post post = new Post();
+            post.postTitle = HttpContext.Current.Request.Params["postTitle"];
+            post.postContent = HttpContext.Current.Request.Params["postContent"];
+            post.postCategory = int.Parse(HttpContext.Current.Request.Params["postCategory"]);
+            post.postedBy = int.Parse(HttpContext.Current.Request.Params["postedBy"]);
+            post.Tags = HttpContext.Current.Request.Params["Tags"];
+            post.postSource = HttpContext.Current.Request.Params["postSource"];
+            post.OwnerOfSource = HttpContext.Current.Request.Params["OwnerOfSource"];
+
             if ((data = PostManager.createPost(post)) != -1)
             {
-                response.data = data;
-                response.success = true;
+                if (HttpContext.Current.Request.Files.AllKeys.Any())
+                {
+                    var filePath = HttpContext.Current.Server.MapPath("~/Images/Post/" + data + ".jpg");
+                    try
+                    {
+                        var httpPostedFile = HttpContext.Current.Request.Files["image"];
+                        httpPostedFile.SaveAs(filePath);
+
+                        UserModel model = new UserModel();
+                        model.userId = data;
+                        model.userImage = HttpContext.Current.Request.Url.Host + (HttpContext.Current.Request.Url.IsDefaultPort ? "" : ":" + HttpContext.Current.Request.Url.Port) + "/Images/POst/" + data + ".jpg";
+                        response.data = model;
+                        response.success = true;
+                    }
+                    catch (System.Exception e)
+                    {
+                        response.data = null;
+                        response.success = false;
+                        response.error = "#InternalServerError";
+                    }
+                }
             }
             else
             {
@@ -65,6 +95,7 @@ namespace AngularNewsFeed.Controllers
                 response.error = "Internal Server Error";
                 response.data = null;
             }
+
             return response;
         }
 

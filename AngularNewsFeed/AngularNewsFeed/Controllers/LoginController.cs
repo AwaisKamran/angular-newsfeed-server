@@ -6,19 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AngularNewsFeed.Controllers
 {
-    public class AuthController : ApiController
+    public class LoginController : ApiController
     {
-        // POST: api/Auth
+        // POST: api/Login
         public ResponseModel Post([FromBody]User user)
         {
-            string userType;
+            User userResponse;
             ResponseModel response = new ResponseModel();
-            if ((userType = UserManager.loginUser(user)) != null)
+            if ((userResponse = UserManager.loginUser(user)) != null)
             {
-                response.data = userType;
+                response.data = userResponse;
                 response.success = true;
             }
             else
