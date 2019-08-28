@@ -119,6 +119,7 @@
     <Compile Include="Controllers\CategoryPostsController.cs" />
     <Compile Include="Controllers\PostApprovalController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\UserPostsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -132,6 +133,7 @@
     <Compile Include="Model\ResponseModel.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserModel.cs" />
+    <Compile Include="Model\UserPost.cs" />
     <Compile Include="newsfeed.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

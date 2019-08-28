@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngularNewsFeed.Model;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -56,6 +57,76 @@ namespace AngularNewsFeed.Manager
                         posts.Add(post);
                     }
                     return posts.ToList<Post>();
+                }
+
+                finally
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        internal static IEnumerable<object> getUserPost(int id)
+        {
+            string queryString = @"select * from posts where postedBy = @postedBy order by postId desc";
+            string connectionString = ConnectionStringManager.getConnectionString();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@postedBy", id);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    if (reader.HasRows)
+                    {
+                        List<UserPost> posts = new List<UserPost>();
+                        while (reader.Read())
+                        {
+                            UserPost post = new UserPost();
+                            post.postId = int.Parse(reader["postId"].ToString());
+                            post.postTitle = reader["postTitle"].ToString();
+                            post.postContent = reader["postContent"].ToString();
+                            post.postCreated = DateTime.Parse(reader["postCreated"].ToString());
+                            post.postCategory = int.Parse(reader["postCategory"].ToString());
+                            post.postApproved = bool.Parse(reader["postApproved"].ToString());
+                            post.postedBy = int.Parse(reader["postedBy"].ToString());
+                            post.MetaTitle = reader["MetaTitle"].ToString();
+                            post.MetaDescription = reader["MetaDescription"].ToString();
+                            if (
+                                   reader["ModifiedDate"].ToString() != null &&
+                                   reader["ModifiedDate"].ToString() != ""
+                               )
+                            {
+                                post.ModifiedDate = DateTime.Parse(reader["ModifiedDate"].ToString());
+                            }
+
+                            if (
+                                    reader["ModifiedBy"].ToString() != null &&
+                                    reader["ModifiedBy"].ToString() != ""
+                               )
+                            {
+                                post.ModifiedBy = int.Parse(reader["ModifiedBy"].ToString());
+                            }
+                            post.Tags = reader["Tags"].ToString();
+                            post.MetaKeywords = reader["MetaKeywords"].ToString();
+                            post.postSource = reader["postSource"].ToString();
+                            post.OwnerOfSource = reader["OwnerOfSource"].ToString();
+                            post.User = UserManager.fetchUser(int.Parse(reader["postedBy"].ToString()));
+                            posts.Add(post);
+                        }
+                        return posts;
+                    }
+                    return null;
+                }
+
+                catch (SqlException exception)
+                {
+                    if (reader != null)
+                    {
+                        reader.Close();
+                    }
+                    return null;
                 }
 
                 finally
@@ -321,8 +392,21 @@ namespace AngularNewsFeed.Manager
                             post.postedBy = int.Parse(reader["postedBy"].ToString());
                             post.MetaTitle = reader["MetaTitle"].ToString();
                             post.MetaDescription = reader["MetaDescription"].ToString();
-                            post.ModifiedDate = DateTime.Parse(reader["ModifiedDate"].ToString());
-                            post.ModifiedBy = int.Parse(reader["ModifiedBy"].ToString());
+                            if (
+                                   reader["ModifiedDate"].ToString() != null &&
+                                   reader["ModifiedDate"].ToString() != ""
+                              )
+                            {
+                                post.ModifiedDate = DateTime.Parse(reader["ModifiedDate"].ToString());
+                            }
+
+                            if (
+                                    reader["ModifiedBy"].ToString() != null &&
+                                    reader["ModifiedBy"].ToString() != ""
+                               )
+                            {
+                                post.ModifiedBy = int.Parse(reader["ModifiedBy"].ToString());
+                            }
                             post.Tags = reader["Tags"].ToString();
                             post.MetaKeywords = reader["MetaKeywords"].ToString();
                             post.postSource = reader["postSource"].ToString();

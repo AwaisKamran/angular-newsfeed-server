@@ -62,6 +62,55 @@ namespace AngularNewsFeed.Manager
             }
         }
 
+        internal static User fetchUser(int id)
+        {
+            string queryString = @"select * from Users where userId=@id";
+            string connectionString = ConnectionStringManager.getConnectionString();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlDataReader reader = null;
+
+                try
+                {
+
+                    SqlCommand command = new SqlCommand(queryString, connection);
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            User user = new User();
+                            user.name = reader["name"].ToString();
+                            user.email = reader["email"].ToString();
+                            user.type = reader["type"].ToString();
+                            user.userId = int.Parse(reader["userId"].ToString());
+                            return user;
+                        }
+                        reader.Close();
+                    }
+                    reader.Close();
+                    return null;
+                }
+
+                catch (SqlException exception)
+                {
+                    if (reader != null)
+                    {
+                        reader.Close();
+                    }
+                    return null;
+                }
+
+                finally
+                {
+                    reader.Close();
+                }
+            }
+        }
+
         internal static User loginUser(User user)
         {
             string queryString = @"    
