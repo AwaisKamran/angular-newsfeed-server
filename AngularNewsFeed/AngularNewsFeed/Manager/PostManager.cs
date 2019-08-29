@@ -11,7 +11,7 @@ namespace AngularNewsFeed.Manager
     {
         internal static IEnumerable<object> getPosts()
         {
-            string queryString = @"select * from posts";
+            string queryString = @"select * from posts where postApproved = 1";
             string connectionString = ConnectionStringManager.getConnectionString();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -380,7 +380,7 @@ namespace AngularNewsFeed.Manager
                 {
                     if (reader.HasRows)
                     {
-                        Post post = new Post();
+                        UserPost post = new UserPost();
                         while (reader.Read())
                         {
                             post.postId = int.Parse(reader["postId"].ToString());
@@ -411,6 +411,7 @@ namespace AngularNewsFeed.Manager
                             post.MetaKeywords = reader["MetaKeywords"].ToString();
                             post.postSource = reader["postSource"].ToString();
                             post.OwnerOfSource = reader["OwnerOfSource"].ToString();
+                            post.User = UserManager.fetchUser(int.Parse(reader["postedBy"].ToString()));
                         }
                         return post;
                     }
@@ -435,7 +436,7 @@ namespace AngularNewsFeed.Manager
 
         internal static IEnumerable<Post> getPostByCategory(int categoryId)
         {
-            string queryString = @"select * from posts where postCategory = @categoryId";
+            string queryString = @"select * from posts where postCategory = @categoryId and postApproved = 1";
             string connectionString = ConnectionStringManager.getConnectionString();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
