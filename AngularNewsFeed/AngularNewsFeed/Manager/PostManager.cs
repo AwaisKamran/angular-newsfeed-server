@@ -146,8 +146,6 @@ namespace AngularNewsFeed.Manager
                     MetaKeywords = @MetaKeywords,
                     ModifiedDate = @ModifiedDate,
                     ModifiedBy = @ModifiedBy,
-                    postSource = @postSource,
-                    OwnerOfSource = @OwnerOfSource
                 where postId= @id";
 
             string connectionString = ConnectionStringManager.getConnectionString();
@@ -158,13 +156,11 @@ namespace AngularNewsFeed.Manager
                 try
                 {
                     SqlCommand command = new SqlCommand(queryString, connection);
-                    command.Parameters.AddWithValue("@MetaTitle", post.MetaTitle);
-                    command.Parameters.AddWithValue("@MetaDescription", post.MetaDescription);
-                    command.Parameters.AddWithValue("@MetaKeywords", post.MetaKeywords);
+                    command.Parameters.AddWithValue("@MetaTitle", post.MetaTitle ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MetaDescription", post.MetaDescription ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MetaKeywords", post.MetaKeywords ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@ModifiedDate", DateTime.Now);
-                    command.Parameters.AddWithValue("@ModifiedBy", post.ModifiedBy);
-                    command.Parameters.AddWithValue("@postSource", post.postSource);
-                    command.Parameters.AddWithValue("@OwnerOfSource", post.OwnerOfSource);
+                    command.Parameters.AddWithValue("@ModifiedBy", post.ModifiedBy ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@id", id);
                     connection.Open();
                     reader = command.ExecuteReader();
