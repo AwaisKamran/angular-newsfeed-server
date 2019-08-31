@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.IO;
 
 namespace AngularNewsFeed.Controllers
 {
@@ -58,7 +59,7 @@ namespace AngularNewsFeed.Controllers
 
             Post post = new Post();
             post.postTitle = HttpContext.Current.Request.Params["postTitle"];
-            post.postContent = HttpContext.Current.Request.Params["postContent"];
+            post.postContent = HttpUtility.HtmlEncode(HttpContext.Current.Request.Params["postContent"]);
             post.postCategory = int.Parse(HttpContext.Current.Request.Params["postCategory"]);
             post.postedBy = int.Parse(HttpContext.Current.Request.Params["postedBy"]);
             post.Tags = HttpContext.Current.Request.Params["Tags"];

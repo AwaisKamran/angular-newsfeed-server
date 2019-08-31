@@ -20,13 +20,13 @@ namespace AngularNewsFeed.Manager
                 SqlDataReader reader = command.ExecuteReader();
                 try
                 {
-                    List<Post> posts = new List<Post>();
+                    List<UserPost> posts = new List<UserPost>();
                     while (reader.Read())
                     {
-                        Post post = new Post();
+                        UserPost post = new UserPost();
                         post.postId = int.Parse(reader["postId"].ToString());
                         post.postTitle = reader["postTitle"].ToString();
-                        post.postContent = reader["postContent"].ToString();
+                        post.postContent = HttpUtility.HtmlDecode(reader["postContent"].ToString());
                         post.postCreated = DateTime.Parse(reader["postCreated"].ToString());
                         post.postCategory = int.Parse(reader["postCategory"].ToString());
                         post.postApproved = bool.Parse(reader["postApproved"].ToString());
@@ -54,6 +54,7 @@ namespace AngularNewsFeed.Manager
                         post.MetaKeywords = reader["MetaKeywords"].ToString();
                         post.postSource = reader["postSource"].ToString();
                         post.OwnerOfSource = reader["OwnerOfSource"].ToString();
+                        post.User = UserManager.fetchUser(int.Parse(reader["postedBy"].ToString()));
                         posts.Add(post);
                     }
                     return posts.ToList<Post>();
@@ -86,7 +87,7 @@ namespace AngularNewsFeed.Manager
                             UserPost post = new UserPost();
                             post.postId = int.Parse(reader["postId"].ToString());
                             post.postTitle = reader["postTitle"].ToString();
-                            post.postContent = reader["postContent"].ToString();
+                            post.postContent = HttpUtility.HtmlDecode(reader["postContent"].ToString());
                             post.postCreated = DateTime.Parse(reader["postCreated"].ToString());
                             post.postCategory = int.Parse(reader["postCategory"].ToString());
                             post.postApproved = bool.Parse(reader["postApproved"].ToString());
@@ -222,7 +223,7 @@ namespace AngularNewsFeed.Manager
                         Post post = new Post();
                         post.postId = int.Parse(reader["postId"].ToString());
                         post.postTitle = reader["postTitle"].ToString();
-                        post.postContent = reader["postContent"].ToString();
+                        post.postContent = HttpUtility.HtmlDecode(reader["postContent"].ToString());
                         post.postCreated = DateTime.Parse(reader["postCreated"].ToString());
                         post.postCategory = int.Parse(reader["postCategory"].ToString());
                         post.postApproved = bool.Parse(reader["postApproved"].ToString());
@@ -282,6 +283,50 @@ namespace AngularNewsFeed.Manager
 
                         IEnumerable<Post> categoryPostList;
                         if ( (categoryPostList = getPostByCategory(category.categoryId)) != null)
+                        {
+                            category.Posts = categoryPostList.ToArray<Post>();
+                        }
+                        categories.Add(category);
+                    }
+                    return categories.ToList<Category>();
+                }
+
+                finally
+                {
+                    reader.Close();
+                }
+            }
+        }
+
+        internal static IEnumerable<object> getCategoryByName(string name)
+        {
+            string queryString;
+            if (name !=null)
+            {
+                queryString = "select * from category where categoryName = '" + name + "'";
+            }
+            else
+            {
+                queryString = "select * from category";
+            }
+
+            string connectionString = ConnectionStringManager.getConnectionString();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    List<Category> categories = new List<Category>();
+                    while (reader.Read())
+                    {
+                        Category category = new Category();
+                        category.categoryId = int.Parse(reader["categoryId"].ToString());
+                        category.categoryName = reader["categoryName"].ToString();
+
+                        IEnumerable<Post> categoryPostList;
+                        if ((categoryPostList = getPostByCategory(category.categoryId)) != null)
                         {
                             category.Posts = categoryPostList.ToArray<Post>();
                         }
@@ -381,7 +426,7 @@ namespace AngularNewsFeed.Manager
                         {
                             post.postId = int.Parse(reader["postId"].ToString());
                             post.postTitle = reader["postTitle"].ToString();
-                            post.postContent = reader["postContent"].ToString();
+                            post.postContent = HttpUtility.HtmlDecode(reader["postContent"].ToString());
                             post.postCreated = DateTime.Parse(reader["postCreated"].ToString());
                             post.postCategory = int.Parse(reader["postCategory"].ToString());
                             post.postApproved = bool.Parse(reader["postApproved"].ToString());
@@ -450,7 +495,7 @@ namespace AngularNewsFeed.Manager
                             Post post = new Post();
                             post.postId = int.Parse(reader["postId"].ToString());
                             post.postTitle = reader["postTitle"].ToString();
-                            post.postContent = reader["postContent"].ToString();
+                            post.postContent = HttpUtility.HtmlDecode(reader["postContent"].ToString());
                             post.postCreated = DateTime.Parse(reader["postCreated"].ToString());
                             post.postCategory = int.Parse(reader["postCategory"].ToString());
                             post.postApproved = bool.Parse(reader["postApproved"].ToString());

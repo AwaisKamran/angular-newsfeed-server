@@ -29,5 +29,23 @@ namespace AngularNewsFeed.Controllers
             }
             return response;
         }
+
+        public ResponseModel Post([FromBody]Category category)
+        {
+            IEnumerable<Object> data;
+           ResponseModel response = new ResponseModel();
+            if ((data = PostManager.getCategoryByName(category.categoryName)) != null)
+            {
+                response.data = data;
+                response.success = true;
+            }
+            else
+            {
+                response.success = false;
+                response.error = "Internal Server Error";
+                response.data = null;
+            }
+            return response;
+        }
     }
 }
